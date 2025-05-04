@@ -28,12 +28,12 @@ class SongController extends Controller
         // Recherche et filtres potentiels
         $query = $request->get('q');
         $genre = $request->get('genre');
-        $artist = $request->get('artist');
+        $artist = $request->get('artist'); // Réactivé car la colonne artist existe
         
         // Construction de la requête
         $songsQuery = Song::with('album')->latest();
         
-        // Appliquer les filtres
+        // Appliquer les filtres de recherche
         if ($query) {
             $songsQuery->where(function($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
@@ -41,10 +41,12 @@ class SongController extends Controller
             });
         }
         
+        // Filtre par genre si sélectionné
         if ($genre) {
             $songsQuery->where('genre', $genre);
         }
         
+        // Filtre par artiste si sélectionné
         if ($artist) {
             $songsQuery->where('artist', 'like', "%{$artist}%");
         }

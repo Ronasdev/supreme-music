@@ -55,4 +55,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Playlist::class);
     }
+    
+    /**
+     * Vérifie si l'utilisateur a acheté un item spécifique (chanson ou album)
+     * 
+     * @param mixed $item Instance de Song ou Album
+     * @return bool
+     */
+    public function hasPurchased($item)
+    {
+        // Récupérer le type de modèle (Song ou Album)
+        $itemType = get_class($item);
+        
+        // Vérifier les commandes de l'utilisateur pour voir si l'item a été acheté
+        return $this->orders()
+            ->whereHas('orderItems', function($query) use ($item, $itemType) {
+                $query->where([
+                    'item_id' => $item->id,
+                    'item_type' => $itemType
+                ]);
+            })
+            ->where('status', 'completed') // Uniquement les commandes completées
+            ->exists();
+    }
 }

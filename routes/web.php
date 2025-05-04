@@ -119,13 +119,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/payments/report', [AdminPaymentController::class, 'generateReport'])->name('payments.report'); // Génération de rapport
     
     // Statistiques
-    Route::get('/stats', [AdminController::class, 'stats'])->name('stats'); // Statistiques générales
-    Route::get('/stats/sales', [AdminController::class, 'salesStats'])->name('stats.sales'); // Statistiques de ventes
-    Route::get('/stats/users', [AdminController::class, 'usersStats'])->name('stats.users'); // Statistiques des utilisateurs
+    Route::get('/stats', [\App\Http\Controllers\Admin\StatController::class, 'index'])->name('stats'); // Statistiques générales
     
     // Paramètres du site
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings'); // Paramètres généraux
-    Route::patch('/settings', [AdminController::class, 'updateSettings'])->name('settings.update'); // Mise à jour des paramètres
+    Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings'); // Paramètres généraux
+    Route::put('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update'); // Mise à jour des paramètres
+    Route::post('/settings/maintenance', [\App\Http\Controllers\Admin\SettingController::class, 'maintenance'])->name('settings.maintenance'); // Actions de maintenance
 });
 
 // Webhook pour les notifications de paiement (accessible publiquement)

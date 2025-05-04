@@ -74,10 +74,9 @@ class AlbumController extends Controller
             'price' => $validated['price'] ?? 0,
         ]);
         
-        // Gestion de l'image de couverture
+        // Gestion de l'image de couverture avec Spatie MediaLibrary
         if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('covers', 'public');
-            $album->cover = $coverPath;
+            $album->addMediaFromRequest('cover')->toMediaCollection('cover');
         }
         
         $album->save();
@@ -148,16 +147,13 @@ class AlbumController extends Controller
             'price' => $validated['price'] ?? $album->price,
         ];
 
-        // Gestion de l'image de couverture
+        // Gestion de l'image de couverture avec Spatie MediaLibrary
         if ($request->hasFile('cover')) {
             // Supprime l'ancienne image si elle existe
-            if ($album->cover) {
-                Storage::disk('public')->delete($album->cover);
-            }
+            $album->clearMediaCollection('cover');
             
-            // Stocke la nouvelle image
-            $coverPath = $request->file('cover')->store('covers', 'public');
-            $updateData['cover'] = $coverPath;
+            // Ajoute la nouvelle image
+            $album->addMediaFromRequest('cover')->toMediaCollection('cover');
         }
 
         // Mise à jour de l'album
@@ -177,15 +173,39 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
-        // Supprime l'image de couverture si elle existe
-        if ($album->cover) {
-            Storage::disk('public')->delete($album->cover);
+        try {
+            // Commencer une transaction pour assurer l'intégrité des données
+            \DB::beginTransaction();
+            
+            // Récupérer toutes les chansons associées à cet album
+            $songs = $album->songs;
+            
+            // Supprimer chaque chanson associée à l'album
+            foreach ($songs as $song) {
+                // Supprimer les médias de la chanson
+                $song->clearMediaCollection('audio');
+                // Supprimer la chanson
+                $song->delete();
+            }
+            
+            // Supprimer les médias associés à l'album
+            $album->clearMediaCollection('cover');
+            
+            // Supprimer l'album
+            $album->delete();
+            
+            // Valider la transaction
+            \DB::commit();
+            
+            return redirect()->route('admin.albums.index')
+                ->with('admin_success', 'Album et ses ' . count($songs) . ' chanson(s) supprimés avec succès');                
+        } catch (\Exception $e) {
+            // En cas d'erreur, annuler toutes les modifications
+            \DB::rollBack();
+            
+            // Afficher un message d'erreur plus convivial
+            return redirect()->route('admin.albums.index')
+                ->with('admin_error', 'Erreur lors de la suppression de l\'album : ' . $e->getMessage());
         }
-        
-        // Supprime l'album (avec les relations selon la configuration du modèle)
-        $album->delete();
-
-        return redirect()->route('admin.albums.index')
-            ->with('admin_success', 'Album supprimé avec succès');
     }
 }
