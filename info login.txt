@@ -1,0 +1,7 @@
+Email: admin@example.com
+Mot de passe: password
+Rôle: admin (accès au panneau d'administration)
+
+Email: user@example.com
+Mot de passe: password
+Rôle: user (utilisateur normal sans droits administratifs)
