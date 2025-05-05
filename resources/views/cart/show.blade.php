@@ -73,13 +73,14 @@
                                             </td>
                                             <td class="text-end">{{ number_format($item['price'], 2) }} €</td>
                                             <td class="text-end pe-3">
-                                                <form action="{{ route('cart.remove', $item['id'] . '_' . $item['type']) }}" method="POST">
+                                                <form action="{{ route('cart.remove', $item['cart_key'] ?? $item['id'] . '_' . $item['type']) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger" title="Retirer du panier">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </form>
+                                                {{-- Commentaire : Nous utilisons prioritairement cart_key si disponible, sinon nous reconstruisons l'ID --}}
                                             </td>
                                         </tr>
                                     @endforeach

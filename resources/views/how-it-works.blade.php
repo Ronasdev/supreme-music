@@ -1,11 +1,91 @@
 @extends('layouts.app')
 
+@section('styles')
+<style>
+    /* Styles pour réparer les accordéons */
+    .faq-card {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 16px;
+        border: 1px solid rgba(0,0,0,.125);
+    }
+    
+    .faq-card .card-header {
+        background-color: #f8f9fa;
+        padding: 0;
+        border: none;
+    }
+    
+    .faq-card .btn-link {
+        display: block;
+        width: 100%;
+        text-align: left;
+        color: #333;
+        font-weight: bold;
+        padding: 16px 20px;
+        position: relative;
+        text-decoration: none;
+    }
+    
+    .faq-card .btn-link:hover {
+        text-decoration: none;
+        background-color: #f0f0f0;
+    }
+    
+    .faq-card .btn-link::after {
+        content: '\f107';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 20px;
+        transition: transform 0.3s ease;
+    }
+    
+    .faq-card .btn-link[aria-expanded="true"]::after {
+        transform: rotate(180deg);
+    }
+    
+    .faq-card .card-body {
+        padding: 20px;
+        line-height: 1.6;
+    }
+</style>
+@endsection
+
 @section('scripts')
 <script>
-    // Initialisation des accordéons
+    // Script personnalisé pour gérer les accordéons
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.accordion-button').forEach(function(element) {
-            new mdb.Collapse(element);
+        document.querySelectorAll('.faq-toggle').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Récupérer l'ID du contenu cible
+                const targetId = this.getAttribute('data-target');
+                const targetCollapse = document.querySelector(targetId);
+                
+                // Fermer tous les autres accordéons
+                document.querySelectorAll('.faq-collapse').forEach(function(collapse) {
+                    if (collapse.id !== targetId.substring(1)) {
+                        collapse.classList.remove('show');
+                        
+                        // Réinitialiser le bouton associé
+                        const relatedButton = document.querySelector(`[data-target="#${collapse.id}"]`);
+                        if (relatedButton) {
+                            relatedButton.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+                
+                // Basculer l'accordéon cible
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                
+                if (targetCollapse) {
+                    targetCollapse.classList.toggle('show');
+                }
+            });
         });
     });
 </script>
@@ -140,23 +220,17 @@
             <div class="mt-5">
                 <h2 class="fw-bold mb-4">Questions fréquentes</h2>
                 
-                <!-- Accordéon MDB correctement structuré -->
-                <div class="accordion" id="faqAccordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button
-                                class="accordion-button collapsed fw-bold"
-                                type="button"
-                                data-mdb-toggle="collapse"
-                                data-mdb-target="#collapseOne"
-                                aria-expanded="false"
-                                aria-controls="collapseOne"
-                            >
+                <!-- FAQ avec des cards simples au lieu d'un accordéon MDB -->
+                <div class="faq-container">
+                    <!-- Question 1 -->
+                    <div class="card faq-card shadow-sm">
+                        <div class="card-header">
+                            <a href="#" class="btn-link faq-toggle" data-target="#collapseOne" aria-expanded="false">
                                 Puis-je télécharger la musique que j'achète ?
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-mdb-parent="#faqAccordion">
-                            <div class="accordion-body">
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="faq-collapse collapse">
+                            <div class="card-body">
                                 Non, notre modèle est basé sur le streaming. Vous n'avez pas besoin de télécharger les fichiers 
                                 audio pour les écouter. Une fois que vous avez acheté un titre ou un album, vous pouvez y accéder 
                                 en streaming à tout moment depuis votre bibliothèque ou vos playlists. Cela vous permet d'économiser 
@@ -165,21 +239,15 @@
                         </div>
                     </div>
                     
-                    <div class="accordion-item mt-3">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button
-                                class="accordion-button collapsed fw-bold"
-                                type="button"
-                                data-mdb-toggle="collapse"
-                                data-mdb-target="#collapseTwo"
-                                aria-expanded="false"
-                                aria-controls="collapseTwo"
-                            >
+                    <!-- Question 2 -->
+                    <div class="card faq-card shadow-sm">
+                        <div class="card-header">
+                            <a href="#" class="btn-link faq-toggle" data-target="#collapseTwo" aria-expanded="false">
                                 Comment fonctionne le paiement par Orange Money ?
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#faqAccordion">
-                            <div class="accordion-body">
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="faq-collapse collapse">
+                            <div class="card-body">
                                 Lors du paiement, vous renseignez votre numéro Orange Money. Vous recevrez ensuite une notification 
                                 sur votre téléphone pour valider le paiement. Une fois la transaction confirmée, vous aurez 
                                 immédiatement accès à vos achats. Le processus est sécurisé et ne prend que quelques secondes.
@@ -187,21 +255,15 @@
                         </div>
                     </div>
                     
-                    <div class="accordion-item mt-3">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button
-                                class="accordion-button collapsed fw-bold"
-                                type="button"
-                                data-mdb-toggle="collapse"
-                                data-mdb-target="#collapseThree"
-                                aria-expanded="false"
-                                aria-controls="collapseThree"
-                            >
+                    <!-- Question 3 -->
+                    <div class="card faq-card shadow-sm">
+                        <div class="card-header">
+                            <a href="#" class="btn-link faq-toggle" data-target="#collapseThree" aria-expanded="false">
                                 Puis-je écouter ma musique hors connexion ?
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-mdb-parent="#faqAccordion">
-                            <div class="accordion-body">
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="faq-collapse collapse">
+                            <div class="card-body">
                                 Actuellement, nous ne proposons pas d'écoute hors ligne. Vous avez besoin d'une connexion internet 
                                 pour accéder à votre musique. Cependant, nous travaillons sur une fonctionnalité future qui 
                                 permettra l'écoute hors ligne pour une durée limitée.
@@ -209,21 +271,15 @@
                         </div>
                     </div>
                     
-                    <div class="accordion-item mt-3">
-                        <h2 class="accordion-header" id="headingFour">
-                            <button
-                                class="accordion-button collapsed fw-bold"
-                                type="button"
-                                data-mdb-toggle="collapse"
-                                data-mdb-target="#collapseFour"
-                                aria-expanded="false"
-                                aria-controls="collapseFour"
-                            >
+                    <!-- Question 4 -->
+                    <div class="card faq-card shadow-sm">
+                        <div class="card-header">
+                            <a href="#" class="btn-link faq-toggle" data-target="#collapseFour" aria-expanded="false">
                                 Est-ce que je dois payer un abonnement mensuel ?
-                            </button>
-                        </h2>
-                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-mdb-parent="#faqAccordion">
-                            <div class="accordion-body">
+                            </a>
+                        </div>
+                        <div id="collapseFour" class="faq-collapse collapse">
+                            <div class="card-body">
                                 Non, nous ne proposons pas d'abonnement mensuel. Vous ne payez que pour la musique que vous achetez.
                                 Une fois que vous avez acheté un titre ou un album, vous pouvez l'écouter autant de fois que vous 
                                 le souhaitez sans frais supplémentaires.

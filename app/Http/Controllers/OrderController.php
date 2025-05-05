@@ -37,25 +37,51 @@ class OrderController extends Controller
         $items = [];
         $total = 0;
         
+        // Débogage - Afficher la structure actuelle du panier
+        \Illuminate\Support\Facades\Log::info('Structure du panier', [
+            'cart' => $cart,
+            'keys' => array_keys($cart)
+        ]);
+        
         // Récupère les détails pour chaque élément du panier
-        foreach ($cart as $id => $item) {
-            if ($item['type'] === 'album') {
+        foreach ($cart as $cartKey => $item) {
+            // Voici le problème : le format de la clé n'est pas utilisé correctement
+            // La clé du panier est au format "id_type" comme "5_album"
+            // Nous devons extraire l'ID réel et le type de cette clé
+            
+            // Première solution : extraire les parties de la clé cartKey
+            $parts = explode('_', $cartKey);
+            
+            // Vérifier que nous avons un format valide (doit avoir au moins deux parties)
+            if (count($parts) >= 2) {
+                $id = $parts[0]; // L'ID est la première partie
+                $type = $parts[1]; // Le type est la seconde partie
+            } else {
+                // Si la clé n'est pas au bon format, utiliser les valeurs du panier
+                $id = $item['id'];
+                $type = $item['type'];
+            }
+            
+            // Charger le produit en fonction du type
+            if ($type === 'album') {
                 $product = Album::find($id);
                 if ($product) {
                     $items[] = [
                         'id' => $id,
                         'type' => 'album',
+                        'cart_key' => $cartKey, // Stocke la clé exacte du panier pour la suppression
                         'product' => $product,
                         'price' => $product->price,
                     ];
                     $total += $product->price;
                 }
-            } elseif ($item['type'] === 'song') {
+            } elseif ($type === 'song') {
                 $product = Song::find($id);
                 if ($product) {
                     $items[] = [
                         'id' => $id,
                         'type' => 'song',
+                        'cart_key' => $cartKey, // Stocke la clé exacte du panier pour la suppression
                         'product' => $product,
                         'price' => $product->price,
                     ];
@@ -186,13 +212,16 @@ class OrderController extends Controller
         // Récupère le panier actuel ou crée un nouveau
         $cart = Session::get('cart', []);
         
+        // Génère la clé unique pour le panier (id_type)
+        $cartKey = $id . '_' . $type;
+        
         // Vérifie si le produit n'est pas déjà dans le panier
-        if (isset($cart[$id . '_' . $type])) {
+        if (isset($cart[$cartKey])) {
             return back()->with('info', 'Ce produit est déjà dans votre panier');
         }
         
         // Ajoute le produit au panier
-        $cart[$id . '_' . $type] = [
+        $cart[$cartKey] = [
             'id' => $id,
             'type' => $type,
             'added_at' => now(),
@@ -215,16 +244,28 @@ class OrderController extends Controller
         // Récupère le panier actuel
         $cart = Session::get('cart', []);
         
-        // Vérifie si le produit est dans le panier
+        // La clé du panier est au format "id_type" (ex: "5_album", "10_song")
+        // Cette clé est utilisée à la fois dans addToCart et dans la vue
+        
+        // Vérifie si le produit est dans le panier avec la clé transmise
         if (isset($cart[$id])) {
+            // Récupère les informations de l'article pour le message de confirmation
+            $itemType = $cart[$id]['type'] === 'album' ? 'Album' : 'Chanson';
+            
             // Retire le produit du panier
             unset($cart[$id]);
             
             // Enregistre le panier mis à jour dans la session
             Session::put('cart', $cart);
             
-            return back()->with('success', 'Produit retiré du panier');
+            return back()->with('success', $itemType . ' retiré(e) du panier avec succès');
         }
+        
+        // Si l'article n'est pas trouvé, enregistre des informations de débogage
+        \Illuminate\Support\Facades\Log::warning('Tentative de suppression d\'un produit non trouvé dans le panier', [
+            'cart_keys' => array_keys($cart),
+            'requested_id' => $id,
+        ]);
         
         return back()->with('error', 'Produit non trouvé dans le panier');
     }
