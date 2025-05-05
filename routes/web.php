@@ -82,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [OrderController::class, 'cart'])->name('cart.show'); // Affichage du panier
     Route::post('/cart/add', [OrderController::class, 'addToCart'])->name('cart.add'); // Ajout au panier
     Route::delete('/cart/remove/{id}', [OrderController::class, 'removeFromCart'])->name('cart.remove'); // Retrait du panier
+    Route::delete('/cart/clear', [OrderController::class, 'clearCart'])->name('cart.clear'); // Vider le panier
     
     // Paiements
     Route::get('/payments/{order}', [PaymentController::class, 'show'])->name('payments.show'); // Page de paiement

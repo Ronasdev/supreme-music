@@ -59,14 +59,20 @@
             <!-- Actions -->
             <div class="d-flex flex-wrap gap-2 mb-4">
                 @auth
-                    <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="id" value="{{ $album->id }}">
-                        <input type="hidden" name="type" value="album">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-shopping-cart me-2"></i> Ajouter au panier
-                        </button>
-                    </form>
+                    @if($isInCart($album->id, 'album'))
+                        <a href="{{ route('cart.show') }}" class="btn btn-success">
+                            <i class="fas fa-check me-2"></i> Déjà dans votre panier
+                        </a>
+                    @else
+                        <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $album->id }}">
+                            <input type="hidden" name="type" value="album">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart me-2"></i> Ajouter au panier
+                            </button>
+                        </form>
+                    @endif
                 @else
                     <a href="{{ route('login') }}" class="btn btn-outline-primary">
                         <i class="fas fa-sign-in-alt me-2"></i> Connectez-vous pour acheter

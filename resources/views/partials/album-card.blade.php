@@ -22,20 +22,36 @@
             @if(Auth::user()->hasPurchased($album))
                 <span class="badge bg-success">Acheté</span>
             @else
-                <form action="{{ route('cart.add', $album->id . '_album') }}" method="POST">
+                @if($isInCart($album->id, 'album'))
+                    <a href="{{ route('cart.show') }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-check me-1"></i> Dans le panier
+                    </a>
+                @else
+                    <form action="{{ route('cart.add') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $album->id }}">
+                        <input type="hidden" name="type" value="album">
+                        <button type="submit" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-shopping-cart me-1"></i> Ajouter
+                        </button>
+                    </form>
+                @endif
+            @endif
+        @else
+            @if($isInCart($album->id, 'album'))
+                <a href="{{ route('cart.show') }}" class="btn btn-sm btn-success">
+                    <i class="fas fa-check me-1"></i> Dans le panier
+                </a>
+            @else
+                <form action="{{ route('cart.add') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="id" value="{{ $album->id }}">
+                    <input type="hidden" name="type" value="album">
                     <button type="submit" class="btn btn-sm btn-outline-success">
                         <i class="fas fa-shopping-cart me-1"></i> Ajouter
                     </button>
                 </form>
             @endif
-        @else
-            <form action="{{ route('cart.add', $album->id . '_album') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-sm btn-outline-success">
-                    <i class="fas fa-shopping-cart me-1"></i> Ajouter
-                </button>
-            </form>
         @endauth
     </div>
 </div>

@@ -264,4 +264,18 @@ class OrderController extends Controller
         
         return back()->with('success', 'Statut de la commande mis à jour');
     }
+
+    /**
+     * Vide complètement le panier
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function clearCart()
+    {
+        // Supprime le panier de la session
+        Session::forget('cart');
+        
+        return redirect()->route('cart.show')
+            ->with('success', 'Votre panier a été vidé avec succès');
+    }
 }

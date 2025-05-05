@@ -29,20 +29,36 @@
                     <i class="fas fa-play me-1"></i> Écouter
                 </a>
             @else
-                <form action="{{ route('cart.add', $song->id . '_song') }}" method="POST">
+                @if($isInCart($song->id, 'song'))
+                    <a href="{{ route('cart.show') }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-check me-1"></i> Dans le panier
+                    </a>
+                @else
+                    <form action="{{ route('cart.add') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $song->id }}">
+                        <input type="hidden" name="type" value="song">
+                        <button type="submit" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-shopping-cart me-1"></i> Ajouter
+                        </button>
+                    </form>
+                @endif
+            @endif
+        @else
+            @if($isInCart($song->id, 'song'))
+                <a href="{{ route('cart.show') }}" class="btn btn-sm btn-success">
+                    <i class="fas fa-check me-1"></i> Dans le panier
+                </a>
+            @else
+                <form action="{{ route('cart.add') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="id" value="{{ $song->id }}">
+                    <input type="hidden" name="type" value="song">
                     <button type="submit" class="btn btn-sm btn-outline-success">
                         <i class="fas fa-shopping-cart me-1"></i> Ajouter
                     </button>
                 </form>
             @endif
-        @else
-            <form action="{{ route('cart.add', $song->id . '_song') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-sm btn-outline-success">
-                    <i class="fas fa-shopping-cart me-1"></i> Ajouter
-                </button>
-            </form>
         @endauth
     </div>
 </div>

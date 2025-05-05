@@ -1,5 +1,16 @@
 @extends('layouts.app')
 
+@section('scripts')
+<script>
+    // Initialisation des accordéons
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.accordion-button').forEach(function(element) {
+            new mdb.Collapse(element);
+        });
+    });
+</script>
+@endsection
+
 @section('content')
 <div class="container my-5">
     <h1 class="fw-bold mb-5 text-center">Comment ça marche</h1>
@@ -129,15 +140,22 @@
             <div class="mt-5">
                 <h2 class="fw-bold mb-4">Questions fréquentes</h2>
                 
+                <!-- Accordéon MDB correctement structuré -->
                 <div class="accordion" id="faqAccordion">
-                    <!-- Question 1 -->
-                    <div class="accordion-item shadow-sm mb-3 border">
+                    <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <button
+                                class="accordion-button collapsed fw-bold"
+                                type="button"
+                                data-mdb-toggle="collapse"
+                                data-mdb-target="#collapseOne"
+                                aria-expanded="false"
+                                aria-controls="collapseOne"
+                            >
                                 Puis-je télécharger la musique que j'achète ?
                             </button>
                         </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-mdb-parent="#faqAccordion">
                             <div class="accordion-body">
                                 Non, notre modèle est basé sur le streaming. Vous n'avez pas besoin de télécharger les fichiers 
                                 audio pour les écouter. Une fois que vous avez acheté un titre ou un album, vous pouvez y accéder 
@@ -147,14 +165,20 @@
                         </div>
                     </div>
                     
-                    <!-- Question 2 -->
-                    <div class="accordion-item shadow-sm mb-3 border">
+                    <div class="accordion-item mt-3">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button
+                                class="accordion-button collapsed fw-bold"
+                                type="button"
+                                data-mdb-toggle="collapse"
+                                data-mdb-target="#collapseTwo"
+                                aria-expanded="false"
+                                aria-controls="collapseTwo"
+                            >
                                 Comment fonctionne le paiement par Orange Money ?
                             </button>
                         </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#faqAccordion">
                             <div class="accordion-body">
                                 Lors du paiement, vous renseignez votre numéro Orange Money. Vous recevrez ensuite une notification 
                                 sur votre téléphone pour valider le paiement. Une fois la transaction confirmée, vous aurez 
@@ -163,14 +187,20 @@
                         </div>
                     </div>
                     
-                    <!-- Question 3 -->
-                    <div class="accordion-item shadow-sm mb-3 border">
+                    <div class="accordion-item mt-3">
                         <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <button
+                                class="accordion-button collapsed fw-bold"
+                                type="button"
+                                data-mdb-toggle="collapse"
+                                data-mdb-target="#collapseThree"
+                                aria-expanded="false"
+                                aria-controls="collapseThree"
+                            >
                                 Puis-je écouter ma musique hors connexion ?
                             </button>
                         </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-mdb-parent="#faqAccordion">
                             <div class="accordion-body">
                                 Actuellement, nous ne proposons pas d'écoute hors ligne. Vous avez besoin d'une connexion internet 
                                 pour accéder à votre musique. Cependant, nous travaillons sur une fonctionnalité future qui 
@@ -179,14 +209,20 @@
                         </div>
                     </div>
                     
-                    <!-- Question 4 -->
-                    <div class="accordion-item shadow-sm mb-3 border">
+                    <div class="accordion-item mt-3">
                         <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <button
+                                class="accordion-button collapsed fw-bold"
+                                type="button"
+                                data-mdb-toggle="collapse"
+                                data-mdb-target="#collapseFour"
+                                aria-expanded="false"
+                                aria-controls="collapseFour"
+                            >
                                 Est-ce que je dois payer un abonnement mensuel ?
                             </button>
                         </h2>
-                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-mdb-parent="#faqAccordion">
                             <div class="accordion-body">
                                 Non, nous ne proposons pas d'abonnement mensuel. Vous ne payez que pour la musique que vous achetez.
                                 Une fois que vous avez acheté un titre ou un album, vous pouvez l'écouter autant de fois que vous 

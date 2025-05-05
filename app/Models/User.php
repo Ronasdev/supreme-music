@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, InteractsWithMedia;
 
     // Attributs assignables en masse
     // Ajout de is_admin pour permettre son assignation via create() ou update()
@@ -77,5 +79,25 @@ class User extends Authenticatable
             })
             ->where('status', 'completed') // Uniquement les commandes completées
             ->exists();
+    }
+    
+    /**
+     * Configure les collections de médias pour l'utilisateur
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile() // Un seul avatar à la fois
+            ->useDisk('public') // Stockage dans le disque public pour accès facile
+            ->registerMediaConversions(function () {
+                $this->addMediaConversion('thumb')
+                    ->width(150)
+                    ->height(150)
+                    ->sharpen(10);
+                
+                $this->addMediaConversion('profile')
+                    ->width(300)
+                    ->height(300);
+            });
     }
 }

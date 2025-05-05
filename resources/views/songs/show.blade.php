@@ -99,14 +99,20 @@
                 @else
                     <!-- Actions d'achat -->
                     <div class="d-flex flex-wrap gap-2 mb-4">
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id" value="{{ $song->id }}">
-                            <input type="hidden" name="type" value="song">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i> Ajouter au panier
-                            </button>
-                        </form>
+                        @if($isInCart($song->id, 'song'))
+                            <a href="{{ route('cart.show') }}" class="btn btn-success">
+                                <i class="fas fa-check me-2"></i> Déjà dans votre panier
+                            </a>
+                        @else
+                            <form action="{{ route('cart.add') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $song->id }}">
+                                <input type="hidden" name="type" value="song">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-shopping-cart me-2"></i> Ajouter au panier
+                                </button>
+                            </form>
+                        @endif
                         
                         @if($song->album)
                             <a href="{{ route('albums.show', $song->album) }}" class="btn btn-outline-info">

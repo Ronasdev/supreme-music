@@ -92,12 +92,18 @@
             <td>
               <a href="{{ route('songs.show', $song) }}" class="btn btn-sm btn-outline-info">Détails</a>
               @auth
-                <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
-                  @csrf
-                  <input type="hidden" name="id" value="{{ $song->id }}">
-                  <input type="hidden" name="type" value="song">
-                  <button type="submit" class="btn btn-sm btn-outline-primary">Ajouter au panier</button>
-                </form>
+                @if($isInCart($song->id, 'song'))
+                  <a href="{{ route('cart.show') }}" class="btn btn-sm btn-success">
+                    <i class="fas fa-check me-1"></i> Dans le panier
+                  </a>
+                @else
+                  <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $song->id }}">
+                    <input type="hidden" name="type" value="song">
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Ajouter au panier</button>
+                  </form>
+                @endif
               @else
                 <a href="{{ route('login') }}" class="btn btn-sm btn-outline-secondary">Connectez-vous pour acheter</a>
               @endauth

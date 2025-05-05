@@ -40,7 +40,7 @@
             <a class="nav-link position-relative" href="{{ route('cart.show') }}" data-mdb-toggle="tooltip" title="Votre panier">
               <i class="fas fa-shopping-cart fa-lg"></i>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                0 <!-- Remplacer par le nombre d'articles dans le panier -->
+                {{ count(session('cart', [])) }}
               </span>
             </a>
           </li>
