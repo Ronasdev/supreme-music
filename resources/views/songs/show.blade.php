@@ -58,8 +58,8 @@
             
             <!-- Lecteur Audio (si l'utilisateur a acheté la chanson) -->
             @auth
-                @if(Auth::user()->orders()->whereHas('items', function($query) use ($song) {
-                    $query->where('song_id', $song->id);
+                @if(Auth::user()->orders()->whereHas('orderItems', function($query) use ($song) {
+                    $query->where('item_id', $song->id)->where('item_type', 'App\\Models\\Song');
                 })->where('status', 'paid')->exists())
                     <div class="card shadow-sm mb-4">
                         <div class="card-body">
