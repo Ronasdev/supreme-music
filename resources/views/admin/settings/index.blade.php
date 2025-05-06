@@ -139,12 +139,28 @@
                         <span class="badge bg-info">{{ $storageInfo['public_disk_size'] }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Fichiers média
+                        Fichiers média (total)
                         <span class="badge bg-info">{{ $storageInfo['total_media_files'] }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Taille totale des médias
                         <span class="badge bg-info">{{ $storageInfo['total_media_size'] }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Fichiers audio
+                        <span class="badge bg-primary">{{ $storageInfo['audio_files'] }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Taille des fichiers audio
+                        <span class="badge bg-primary">{{ $storageInfo['audio_size'] }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Images de couverture
+                        <span class="badge bg-success">{{ $storageInfo['cover_files'] }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Taille des images de couverture
+                        <span class="badge bg-success">{{ $storageInfo['cover_size'] }}</span>
                     </li>
                 </ul>
             </div>

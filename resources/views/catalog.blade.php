@@ -97,8 +97,8 @@
                 <div class="card h-100 shadow-hover rounded-lg border-0 overflow-hidden">
                     <div class="position-relative album-cover-container">
                         <a href="{{ route('albums.show', $album) }}" class="cover-link">
-                            @if($album->getFirstMedia('cover'))
-                                <img src="{{ $album->getFirstMedia('cover')->getUrl() }}" class="card-img-top album-cover" alt="{{ $album->title }}">
+                            @if($album->hasCoverImage())
+                                <img src="{{ $album->getCoverImageUrl() }}" class="card-img-top album-cover" alt="{{ $album->title }}">
                             @else
                                 <div class="placeholder-cover d-flex align-items-center justify-content-center bg-light">
                                     <i class="fas fa-music fa-3x text-muted"></i>

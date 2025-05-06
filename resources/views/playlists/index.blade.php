@@ -23,8 +23,8 @@
                     <div class="card shadow-sm h-100">
                         <!-- Image de couverture -->
                         <div class="position-relative">
-                            @if($playlist->songs->count() > 0 && $playlist->songs->first()->album && $playlist->songs->first()->album->getFirstMedia('cover'))
-                                <img src="{{ $playlist->songs->first()->album->getFirstMediaUrl('cover') }}" class="card-img-top" alt="{{ $playlist->name }}" style="height: 180px; object-fit: cover;">
+                            @if($playlist->songs->count() > 0 && $playlist->songs->first()->album && $playlist->songs->first()->album->hasCoverImage())
+                                <img src="{{ $playlist->songs->first()->album->getCoverImageUrl() }}" class="card-img-top" alt="{{ $playlist->name }}" style="height: 180px; object-fit: cover;">
                             @else
                                 <div class="bg-light text-center py-5" style="height: 180px;">
                                     <i class="fas fa-music fa-3x text-muted"></i>

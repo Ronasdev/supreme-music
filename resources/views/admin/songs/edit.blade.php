@@ -86,11 +86,11 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             
-                            @if($song->getFirstMedia('audio'))
+                            @if($song->hasAudioFile())
                                 <div class="mt-2">
                                     <div class="d-flex align-items-center">
                                         <span class="badge bg-success me-2">Fichier actuel</span>
-                                        <span class="text-truncate">{{ $song->getFirstMedia('audio')->file_name }}</span>
+                                        <span class="text-truncate">{{ $song->audio_file }}</span>
                                     </div>
                                     <div class="form-text">Laissez vide pour conserver le fichier existant</div>
                                 </div>

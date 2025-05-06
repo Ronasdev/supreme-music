@@ -1,6 +1,6 @@
 <div class="card h-100 shadow-sm">
-    @if($song->album && $song->album->getFirstMedia('cover'))
-        <img src="{{ $song->album->getFirstMediaUrl('cover') }}" class="card-img-top" alt="{{ $song->title }}" style="height: 180px; object-fit: cover;">
+    @if($song->album && $song->album->hasCoverImage())
+        <img src="{{ $song->album->getCoverImageUrl() }}" class="card-img-top" alt="{{ $song->title }}" style="height: 180px; object-fit: cover;">
     @else
         <div class="bg-light text-center py-5" style="height: 180px;">
             <i class="fas fa-music fa-3x text-muted"></i>

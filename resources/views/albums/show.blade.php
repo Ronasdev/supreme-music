@@ -17,8 +17,8 @@
         <!-- Image de l'album -->
         <div class="col-lg-5 mb-4 mb-lg-0">
             <div class="position-relative">
-                @if($album->getFirstMedia('cover'))
-                    <img src="{{ $album->getFirstMediaUrl('cover') }}" alt="{{ $album->title }}" class="img-fluid rounded shadow-lg album-cover-animation">
+                @if($album->hasCoverImage())
+                    <img src="{{ $album->getCoverImageUrl() }}" alt="{{ $album->title }}" class="img-fluid rounded shadow-lg album-cover-animation">
                 @else
                     <img src="https://placehold.co/600x600?text=Album" alt="{{ $album->title }}" class="img-fluid rounded shadow-lg album-cover-animation">
                 @endif
@@ -171,8 +171,8 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm hover-shadow">
                         <div class="position-relative">
-                            @if($relatedAlbum->getFirstMedia('cover'))
-                                <img src="{{ $relatedAlbum->getFirstMediaUrl('cover') }}" class="card-img-top album-cover-animation" alt="{{ $relatedAlbum->title }}" style="height: 180px; object-fit: cover;">
+                            @if($relatedAlbum->hasCoverImage())
+                                <img src="{{ $relatedAlbum->getCoverImageUrl() }}" class="card-img-top album-cover-animation" alt="{{ $relatedAlbum->title }}" style="height: 180px; object-fit: cover;">
                             @else
                                 <div class="bg-light text-center py-5 album-cover-animation" style="height: 180px;">
                                     <i class="fas fa-compact-disc fa-3x text-muted"></i>

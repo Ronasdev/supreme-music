@@ -36,8 +36,8 @@
             <td>{{ $album->id }}</td>
             <td>{{ $album->title }}</td>
             <td>
-                @if($album->getFirstMedia('cover'))
-                    <img src="{{ $album->getFirstMedia('cover')->getUrl() }}" width="60">
+                @if($album->hasCoverImage())
+                    <img src="{{ $album->getCoverImageUrl() }}" width="60">
                 @else
                     <em>Pas d’image</em>
                 @endif

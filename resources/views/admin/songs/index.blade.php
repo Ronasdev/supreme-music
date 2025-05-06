@@ -50,7 +50,7 @@
                             <td>{{ number_format($song->price, 2) }} €</td>
                             <td>{{ $song->duration ?? '00:00' }}</td>
                             <td>
-                                @if($song->getFirstMedia('audio'))
+                                @if($song->hasAudioFile())
                                     <span class="badge bg-success">Fichier présent</span>
                                 @else
                                     <span class="badge bg-danger">Manquant</span>

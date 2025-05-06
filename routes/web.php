@@ -59,6 +59,7 @@ Route::get('/songs', [SongController::class, 'index'])->name('songs.index'); // 
 Route::get('/songs/{song}', [SongController::class, 'show'])->name('songs.show'); // Détail d'une chanson
 Route::get('/songs/{song}/preview', [SongController::class, 'preview'])->name('songs.preview'); // Prévisualisation audio
 Route::get('/media/audio/{song}', [MediaController::class, 'serveAudio'])->name('media.serveAudio'); // Streaming direct des fichiers audio
+Route::get('/media/cover/{album}', [MediaController::class, 'serveAlbumCover'])->name('media.serveAlbumCover'); // Affichage des images de couverture
 
 // Routes d'authentification gérées par Laravel Breeze
 

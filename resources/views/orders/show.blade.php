@@ -64,8 +64,8 @@
                                                     @endphp
                                                     @if($album)
                                                         <div class="me-3">
-                                                            @if($album->getFirstMedia('cover'))
-                                                                <img src="{{ $album->getFirstMediaUrl('cover') }}" alt="{{ $album->title }}" style="width: 50px; height: 50px;" class="rounded shadow-sm">
+                                                            @if($album->hasCoverImage())
+                                                                <img src="{{ $album->getCoverImageUrl() }}" alt="{{ $album->title }}" style="width: 50px; height: 50px;" class="rounded shadow-sm">
                                                             @else
                                                                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                                                     <i class="fas fa-compact-disc text-muted"></i>
@@ -85,8 +85,8 @@
                                                     @endphp
                                                     @if($song)
                                                         <div class="me-3">
-                                                            @if($song->album && $song->album->getFirstMedia('cover'))
-                                                                <img src="{{ $song->album->getFirstMediaUrl('cover') }}" alt="{{ $song->title }}" style="width: 50px; height: 50px;" class="rounded shadow-sm">
+                                                            @if($song->album && $song->album->hasCoverImage())
+                                                                <img src="{{ $song->album->getCoverImageUrl() }}" alt="{{ $song->title }}" style="width: 50px; height: 50px;" class="rounded shadow-sm">
                                                             @else
                                                                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                                                     <i class="fas fa-music text-muted"></i>

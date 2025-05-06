@@ -86,16 +86,16 @@
                     <h3 class="card-title h5 mb-0">Fichier audio</h3>
                 </div>
                 <div class="card-body">
-                    @if($song->getFirstMedia('audio'))
+                    @if($song->hasAudioFile())
                         <div class="mb-3">
                             <audio controls class="w-100">
-                                <source src="{{ $song->getFirstMediaUrl('audio') }}" type="audio/mpeg">
+                                <source src="{{ $song->getAudioUrl() }}" type="audio/mpeg">
                                 Votre navigateur ne supporte pas la lecture audio.
                             </audio>
                         </div>
                         <div class="d-flex justify-content-between align-items-center small text-muted">
-                            <span>{{ $song->getFirstMedia('audio')->file_name }}</span>
-                            <span>{{ round($song->getFirstMedia('audio')->size / 1024 / 1024, 2) }} Mo</span>
+                            <span>{{ $song->audio_file }}</span>
+                            <span>{{ $song->filesize ? round($song->filesize / 1024 / 1024, 2) . ' Mo' : 'Taille inconnue' }}</span>
                         </div>
                     @else
                         <div class="alert alert-warning">

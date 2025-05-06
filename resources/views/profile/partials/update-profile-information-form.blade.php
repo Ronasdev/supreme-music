@@ -24,8 +24,8 @@
                 <div class="me-3">
                     @if(session('user_avatar'))
                         <img src="{{ session('user_avatar') }}" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-                    @elseif(Auth::user()->getFirstMediaUrl('avatar'))
-                        <img src="{{ Auth::user()->getFirstMediaUrl('avatar') }}" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                    @elseif(Auth::user()->hasAvatar())
+                        <img src="{{ Auth::user()->getAvatarUrl() }}" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
                     @else
                         <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                             <span class="text-white h4 mb-0">{{ substr(Auth::user()->name, 0, 1) }}</span>

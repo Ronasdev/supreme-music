@@ -75,8 +75,8 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
-                                                        @if($song->album && $song->album->getFirstMedia('cover'))
-                                                            <img src="{{ $song->album->getFirstMediaUrl('cover') }}" alt="{{ $song->title }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
+                                                        @if($song->album && $song->album->hasCoverImage())
+                                                            <img src="{{ $song->album->getCoverImageUrl() }}" alt="{{ $song->title }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
                                                         @else
                                                             <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                                                 <i class="fas fa-music text-muted"></i>

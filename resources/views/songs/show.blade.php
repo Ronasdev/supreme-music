@@ -22,8 +22,8 @@
         <!-- Image de la chanson (cover de l'album) -->
         <div class="col-lg-4 mb-4 mb-lg-0">
             <div class="position-relative">
-                @if($song->album && $song->album->getFirstMedia('cover'))
-                    <img src="{{ $song->album->getFirstMediaUrl('cover') }}" alt="{{ $song->title }}" class="img-fluid rounded shadow-lg">
+                @if($song->album && $song->album->hasCoverImage())
+                    <img src="{{ $song->album->getCoverImageUrl() }}" alt="{{ $song->title }}" class="img-fluid rounded shadow-lg">
                 @else
                     <div class="rounded shadow-lg bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
                         <i class="fas fa-music fa-5x text-muted"></i>
@@ -187,8 +187,8 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm hover-shadow">
                         <div class="position-relative">
-                            @if($relatedSong->album && $relatedSong->album->getFirstMedia('cover'))
-                                <img src="{{ $relatedSong->album->getFirstMediaUrl('cover') }}" class="card-img-top" alt="{{ $relatedSong->title }}">
+                            @if($relatedSong->album && $relatedSong->album->hasCoverImage())
+                                <img src="{{ $relatedSong->album->getCoverImageUrl() }}" class="card-img-top" alt="{{ $relatedSong->title }}">
                             @else
                                 <div class="bg-light text-center py-5">
                                     <i class="fas fa-music fa-3x text-muted"></i>
@@ -276,26 +276,39 @@
                         }
                         
                         if (data.preview_url) {
+                            // Vérifier et afficher l'URL de prévisualisation dans la console pour débogage
+                            console.log('URL de prévisualisation:', data.preview_url);
+                            
                             // Ajouter un gestionnaire d'erreurs pour l'audio
                             previewAudio.onerror = function(e) {
                                 console.error('Erreur de lecture audio:', e);
-                                alert('Erreur lors de la lecture du fichier audio. Vérifiez la console pour plus de détails.');
+                                // Information d'erreur plus détaillée
+                                const errorDetails = previewAudio.error ? 
+                                    `Code: ${previewAudio.error.code}, Message: ${previewAudio.error.message}` : 
+                                    'Erreur inconnue';
+                                console.error('Détails de l\'erreur:', errorDetails);
+                                alert('Erreur lors de la lecture du fichier audio. Consultez la console pour plus de détails.');
                             };
                             
-                            // Configurer et lancer la lecture
+                            // Configurer et lancer la lecture avec un délai pour s'assurer que le fichier est prêt
                             previewAudio.src = data.preview_url;
                             previewAudio.load();
                             
                             // Ajouter un gestionnaire pour la lecture réussie
                             previewAudio.oncanplay = function() {
-                                previewAudio.play()
-                                    .catch(e => {
-                                        console.error('Erreur lors du démarrage de la lecture:', e);
-                                        alert('Le navigateur a bloqué la lecture automatique. Veuillez cliquer sur le lecteur pour démarrer.');
-                                    });
+                                console.log('Audio prêt à être joué');
+                                setTimeout(() => {
+                                    previewAudio.play()
+                                        .then(() => console.log('Lecture audio démarrée avec succès'))
+                                        .catch(e => {
+                                            console.error('Erreur lors du démarrage de la lecture:', e);
+                                            alert('Le navigateur a bloqué la lecture automatique. Veuillez cliquer sur le lecteur pour démarrer.');
+                                        });
+                                }, 300);
                             };
                         } else {
                             alert('Prévisualisation non disponible pour cette chanson.');
+                            console.error('URL de prévisualisation manquante dans la réponse:', data);
                         }
                         
                         document.body.classList.remove('loading-preview');
@@ -307,6 +320,10 @@
                             loadingMessage.remove();
                         }
                         document.body.classList.remove('loading-preview');
+                        
+                        // Réafficher le bouton de prévisualisation en cas d'échec
+                        previewPlayer.style.display = 'none';
+                        previewButton.style.display = 'block';
                     });
             });
         }

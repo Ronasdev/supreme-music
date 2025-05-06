@@ -135,8 +135,8 @@
               <span class="d-none d-md-inline me-2">{{ auth()->user()->name }}</span>
               @if(session('user_avatar'))
                 <img src="{{ session('user_avatar') }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
-              @elseif(auth()->user()->getFirstMediaUrl('avatar'))
-                <img src="{{ auth()->user()->getFirstMediaUrl('avatar') }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
+              @elseif(auth()->user()->hasAvatar())
+                <img src="{{ auth()->user()->getAvatarUrl() }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
               @elseif(file_exists(public_path('storage/avatars/'.auth()->id().'.jpg')))
                 <img src="{{ asset('storage/avatars/'.auth()->id().'.jpg') }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
               @else

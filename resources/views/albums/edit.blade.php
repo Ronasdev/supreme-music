@@ -37,10 +37,10 @@
     <div class="mb-4">
       <label for="cover" class="form-label">Changer l’image de couverture (optionnel)</label>
       <input type="file" class="form-control" name="cover" id="cover">
-      @if ($album->getFirstMediaUrl('cover'))
-        <div class="mt-2">
-          <strong>Image actuelle :</strong><br>
-          <img src="{{ $album->getFirstMediaUrl('cover') }}" alt="cover" class="img-fluid rounded" style="max-height: 150px;">
+      @if ($album->hasCoverImage())
+        <div class="mb-3">
+          <p>Image de couverture actuelle :</p>
+          <img src="{{ $album->getCoverImageUrl() }}" alt="cover" class="img-fluid rounded" style="max-height: 150px;">
         </div>
       @endif
     </div>

@@ -26,8 +26,8 @@
       <div class="col">
         <div class="card h-100 shadow-sm hover-shadow">
           <div class="position-relative">
-            @if($album->getFirstMedia('cover'))
-              <img src="{{ $album->getFirstMediaUrl('cover') }}" class="card-img-top" alt="{{ $album->title }}">
+            @if($album->hasCoverImage())
+              <img src="{{ $album->getCoverImageUrl() }}" class="card-img-top" alt="{{ $album->title }}">
             @else
               <img src="https://placehold.co/300x300?text=Album" class="card-img-top" alt="{{ $album->title }}">
             @endif
@@ -73,8 +73,8 @@
           <div class="d-flex align-items-center" style="width: 15%">
             <div class="me-3 text-muted fw-bold">{{ $index + 1 }}</div>
             <div class="song-cover-wrapper">
-              @if($song->album && $song->album->getFirstMedia('cover'))
-                <img src="{{ $song->album->getFirstMediaUrl('cover', 'thumbnail') }}" 
+              @if($song->album && $song->album->hasCoverImage())
+                <img src="{{ $song->album->getCoverImageUrl() }}" 
                      alt="{{ $song->title }}" 
                      class="rounded song-cover shadow-sm">
               @else

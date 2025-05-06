@@ -6,13 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable;
 
     // Attributs assignables en masse
     // Ajout de is_admin pour permettre son assignation via create() ou update()
@@ -28,13 +27,42 @@ class User extends Authenticatable implements HasMedia
         'password',
         'remember_token',
     ];
-
-   
+    
+    /**
+     * Attributs à caster
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_admin' => 'boolean', // Cast is_admin en booléen pour faciliter les comparaisons
     ];
+    
+    /**
+     * Vérifie si l'utilisateur a un avatar
+     *
+     * @return bool
+     */
+    public function hasAvatar()
+    {
+        return !empty($this->avatar_path) && Storage::disk('public')->exists(str_replace('/storage/', '', $this->avatar_path));
+    }
+    
+    /**
+     * Obtient l'URL de l'avatar de l'utilisateur
+     *
+     * @return string
+     */
+    public function getAvatarUrl()
+    {
+        if ($this->hasAvatar()) {
+            return asset($this->avatar_path);
+        }
+        
+        // Avatar par défaut
+        return asset('images/default-avatar.png');
+    }
     
     /**
      * Relation avec les commandes de l'utilisateur

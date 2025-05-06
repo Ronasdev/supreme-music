@@ -83,11 +83,9 @@ class SongController extends Controller
         
         $song->save();
         
-        // Gestion du fichier audio avec Spatie Media Library
+        // Gestion du fichier audio avec notre nouvelle approche
         if ($request->hasFile('audio_file')) {
-            $song->addMediaFromRequest('audio_file')
-                ->usingFileName(Str::slug($song->title) . '-' . time() . '.' . $request->file('audio_file')->getClientOriginalExtension())
-                ->toMediaCollection('audio');
+            $song->setAudioFile($request->file('audio_file'));
         }
 
         return redirect()->route('admin.songs.index')
@@ -155,15 +153,10 @@ class SongController extends Controller
             'description' => $validated['description'],
         ]);
 
-        // Gestion du fichier audio avec Spatie Media Library (si nouveau fichier fourni)
+        // Gestion du fichier audio avec notre nouvelle approche (si nouveau fichier fourni)
         if ($request->hasFile('audio_file')) {
-            // Supprime l'ancien fichier audio s'il existe
-            $song->clearMediaCollection('audio');
-            
-            // Ajoute le nouveau fichier audio
-            $song->addMediaFromRequest('audio_file')
-                ->usingFileName(Str::slug($song->title) . '-' . time() . '.' . $request->file('audio_file')->getClientOriginalExtension())
-                ->toMediaCollection('audio');
+            // La méthode setAudioFile s'occupe de supprimer l'ancien fichier si nécessaire
+            $song->setAudioFile($request->file('audio_file'));
         }
 
         return redirect()->route('admin.songs.index')
@@ -180,8 +173,10 @@ class SongController extends Controller
      */
     public function destroy(Song $song)
     {
-        // Supprime les fichiers multimédia associés
-        $song->clearMediaCollection('audio');
+        // Vérifie si la chanson a un fichier audio et le supprime
+        if ($song->hasAudioFile()) {
+            Storage::disk('public')->deleteDirectory('audio/' . $song->id);
+        }
         
         // Supprime la chanson
         $song->delete();

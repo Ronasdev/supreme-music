@@ -97,8 +97,8 @@
                                         <td class="align-middle">{{ $index + 1 + ($songs->currentPage() - 1) * $songs->perPage() }}</td>
                                         <td class="align-middle">
                                             <div class="d-flex align-items-center">
-                                                @if($song->album && $song->album->getFirstMediaUrl('cover'))
-                                                    <img src="{{ $song->album->getFirstMediaUrl('cover', 'thumbnail') }}" 
+                                                @if($song->album && $song->album->hasCoverImage())
+                                                    <img src="{{ $song->album->getCoverImageUrl() }}" 
                                                          class="rounded me-3" style="width: 40px; height: 40px; object-fit: cover;" 
                                                          alt="{{ $song->album->title }}">
                                                 @else

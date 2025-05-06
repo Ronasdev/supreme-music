@@ -116,24 +116,36 @@ class SongController extends Controller
      */
     public function preview(Song $song)
     {
-        // Vérifier que la chanson a un fichier audio
-        $media = $song->getFirstMedia('audio');
-        
-        if (!$media) {
-            return response()->json(['error' => 'Fichier audio non disponible'], 404);
+        try {
+            // Vérifier que la chanson a un fichier audio associé
+            if (!$song->hasAudioFile()) {
+                return response()->json(['error' => 'Fichier audio non disponible'], 404);
+            }
+            
+            // Incrémenter le compteur de previews
+            $song->increment('previews_count');
+            
+            // Obtenir l'URL du fichier audio
+            $audioUrl = $song->getAudioUrl();
+            
+            // Retourner les informations nécessaires à la lecture audio
+            return response()->json([
+                'preview_url' => $audioUrl,
+                'duration' => $song->duration,
+                'title' => $song->title,
+                'artist' => $song->artist,
+                'success' => true
+            ]);
+        } catch (\Exception $e) {
+            // Log détaillé de l'erreur pour faciliter le débogage
+            \Illuminate\Support\Facades\Log::error('Erreur prévisualisation audio: ' . $e->getMessage(), [
+                'song_id' => $song->id,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json(['error' => 'Erreur lors de la prévisualisation: ' . $e->getMessage()], 500);
         }
-        
-        // Utiliser notre nouvelle route de streaming direct qui contourne les problèmes
-        // Cette approche est beaucoup plus simple et robuste
-        $directStreamUrl = route('media.serveAudio', $song);
-        
-        // Retourner les informations nécessaires à la lecture audio
-        return response()->json([
-            'preview_url' => $directStreamUrl,
-            'duration' => $song->duration,
-            'title' => $song->title,
-            'artist' => $song->artist,
-            'success' => true
-        ]);
     }
 }

@@ -49,10 +49,17 @@ class SettingController extends Controller
         ];
         
         // Informations sur le stockage
+        $audioFiles = $this->countFilesInDirectory('audio');
+        $coverFiles = $this->countFilesInDirectory('covers');
+        
         $storageInfo = [
             'public_disk_size' => $this->formatSize($this->getDiskSize('public')),
-            'total_media_files' => DB::table('media')->count(),
-            'total_media_size' => $this->formatSize(DB::table('media')->sum('size')),
+            'total_media_files' => $audioFiles['count'] + $coverFiles['count'],
+            'total_media_size' => $this->formatSize($audioFiles['size'] + $coverFiles['size']),
+            'audio_files' => $audioFiles['count'],
+            'cover_files' => $coverFiles['count'],
+            'audio_size' => $this->formatSize($audioFiles['size']),
+            'cover_size' => $this->formatSize($coverFiles['size']),
         ];
         
         return view('admin.settings.index', compact('settings', 'appInfo', 'storageInfo'));
@@ -176,5 +183,31 @@ class SettingController extends Controller
         }
         
         return round($bytes, 2) . ' ' . $units[$i];
+    }
+    
+    /**
+     * Compte les fichiers et leur taille totale dans un répertoire donné
+     * 
+     * @param  string  $directory
+     * @return array
+     */
+    private function countFilesInDirectory($directory)
+    {
+        $path = storage_path('app/public/' . $directory);
+        $count = 0;
+        $size = 0;
+        
+        // Vérifier si le répertoire existe
+        if (!File::exists($path)) {
+            return ['count' => 0, 'size' => 0];
+        }
+        
+        // Parcourir récursivement tous les fichiers
+        foreach (File::allFiles($path) as $file) {
+            $count++;
+            $size += $file->getSize();
+        }
+        
+        return ['count' => $count, 'size' => $size];
     }
 }

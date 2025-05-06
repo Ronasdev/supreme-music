@@ -4,18 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Facades\Storage;
 
-class Song extends Model implements HasMedia {
-    use HasFactory, InteractsWithMedia; // Utilisation de InteractsWithMedia pour la gestion des fichiers audio
+class Song extends Model {
+    use HasFactory;
     
     /**
      * Attributs assignables en masse
      *
      * @var array
      */
-    protected $fillable = ['title','description','price','duration','album_id'];
+    protected $fillable = ['title', 'description', 'price', 'duration', 'album_id', 'audio_file', 'artist', 'genre', 'year'];
 
     /**
      * Relation polymorphique avec les éléments de commande
@@ -51,16 +50,68 @@ class Song extends Model implements HasMedia {
     }
     
     /**
-     * Configuration des collections de médias pour Spatie MediaLibrary
+     * Vérifie si la chanson a un fichier audio associé
      *
-     * @return void
+     * @return bool
      */
-    public function registerMediaCollections(): void
+    public function hasAudioFile()
     {
-        // Collection pour le fichier audio
-        $this->addMediaCollection('audio')
-            ->singleFile() // Un seul fichier audio par chanson
-            ->acceptsMimeTypes(['audio/mpeg', 'audio/mp3', 'audio/wav']) // N'accepte que les formats audio
-            ->useDisk('public'); // Stockage sur le disque public
+        return !empty($this->audio_file) && Storage::disk('public')->exists('audio/' . $this->id . '/' . $this->audio_file);
+    }
+    
+    /**
+     * Obtient l'URL du fichier audio
+     *
+     * @return string|null
+     */
+    public function getAudioUrl()
+    {
+        if ($this->hasAudioFile()) {
+            return asset('storage/audio/' . $this->id . '/' . $this->audio_file);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Enregistre un fichier audio pour la chanson
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return bool
+     */
+    public function setAudioFile($file)
+    {
+        // Supprime l'ancien fichier audio s'il existe
+        if ($this->hasAudioFile()) {
+            Storage::disk('public')->delete('audio/' . $this->id . '/' . $this->audio_file);
+        }
+        
+        // Génère un nom de fichier unique
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        
+        // Stocke le nouveau fichier audio
+        $path = $file->storeAs('audio/' . $this->id, $filename, 'public');
+        
+        if ($path) {
+            $this->audio_file = $filename;
+            $this->save();
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Obtient le chemin physique du fichier audio
+     *
+     * @return string|null
+     */
+    public function getAudioPath()
+    {
+        if ($this->hasAudioFile()) {
+            return storage_path('app/public/audio/' . $this->id . '/' . $this->audio_file);
+        }
+        
+        return null;
     }
 }

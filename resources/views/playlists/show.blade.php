@@ -26,8 +26,8 @@
                     <div class="row">
                         <!-- Image/Couverture -->
                         <div class="col-md-4 mb-3 mb-md-0">
-                            @if($playlist->songs->count() > 0 && $playlist->songs->first()->album && $playlist->songs->first()->album->getFirstMedia('cover'))
-                                <img src="{{ $playlist->songs->first()->album->getFirstMediaUrl('cover') }}" class="img-fluid rounded shadow" alt="{{ $playlist->name }}">
+                            @if($playlist->songs->count() > 0 && $playlist->songs->first()->album && $playlist->songs->first()->album->hasCoverImage())
+                                <img src="{{ $playlist->songs->first()->album->getCoverImageUrl() }}" class="img-fluid rounded shadow" alt="{{ $playlist->name }}">
                             @else
                                 <div class="bg-light text-center rounded shadow py-5">
                                     <i class="fas fa-music fa-4x text-muted"></i>
@@ -128,8 +128,8 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
-                                                        @if($song->album && $song->album->getFirstMedia('cover'))
-                                                            <img src="{{ $song->album->getFirstMediaUrl('cover') }}" alt="{{ $song->title }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
+                                                        @if($song->album && $song->album->hasCoverImage())
+                                                            <img src="{{ $song->album->getCoverImageUrl() }}" alt="{{ $song->title }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
                                                         @else
                                                             <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                                                 <i class="fas fa-music text-muted"></i>
@@ -196,8 +196,8 @@
                                 <div class="list-group-item">
                                     <div class="d-flex align-items-center">
                                         <div class="me-3">
-                                            @if($recommendedSong->album && $recommendedSong->album->getFirstMedia('cover'))
-                                                <img src="{{ $recommendedSong->album->getFirstMediaUrl('cover') }}" alt="{{ $recommendedSong->title }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
+                                            @if($recommendedSong->album && $recommendedSong->album->hasCoverImage())
+                                                <img src="{{ $recommendedSong->album->getCoverImageUrl() }}" alt="{{ $recommendedSong->title }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
                                             @else
                                                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                                     <i class="fas fa-music text-muted"></i>
@@ -240,8 +240,8 @@
                                 <a href="{{ route('playlists.show', $otherPlaylist) }}" class="list-group-item list-group-item-action">
                                     <div class="d-flex align-items-center">
                                         <div class="me-3">
-                                            @if($otherPlaylist->songs->count() > 0 && $otherPlaylist->songs->first()->album && $otherPlaylist->songs->first()->album->getFirstMedia('cover'))
-                                                <img src="{{ $otherPlaylist->songs->first()->album->getFirstMediaUrl('cover') }}" alt="{{ $otherPlaylist->name }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
+                                            @if($otherPlaylist->songs->count() > 0 && $otherPlaylist->songs->first()->album && $otherPlaylist->songs->first()->album->hasCoverImage())
+                                                <img src="{{ $otherPlaylist->songs->first()->album->getCoverImageUrl() }}" alt="{{ $otherPlaylist->name }}" style="width: 40px; height: 40px;" class="rounded shadow-sm">
                                             @else
                                                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                                     <i class="fas fa-music text-muted"></i>

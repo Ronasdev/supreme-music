@@ -13,9 +13,9 @@
                         @if(session('user_avatar'))
                             <!-- Affiche l'avatar depuis la session (nouvelle méthode) -->
                             <img src="{{ session('user_avatar') }}" class="rounded-circle img-fluid mx-auto shadow" style="width: 120px; height: 120px; object-fit: cover;" alt="{{ Auth::user()->name }}">
-                        @elseif(Auth::user()->getFirstMediaUrl('avatar'))
-                            <!-- Affiche l'avatar depuis MediaLibrary (ancienne méthode) -->
-                            <img src="{{ Auth::user()->getFirstMediaUrl('avatar') }}" class="rounded-circle img-fluid mx-auto shadow" style="width: 120px; height: 120px; object-fit: cover;" alt="{{ Auth::user()->name }}">
+                        @elseif(Auth::user()->hasAvatar())
+                            <!-- Affiche l'avatar avec la nouvelle méthode -->
+                            <img src="{{ Auth::user()->getAvatarUrl() }}" class="rounded-circle img-fluid mx-auto shadow" style="width: 120px; height: 120px; object-fit: cover;" alt="{{ Auth::user()->name }}">
                         @elseif(file_exists(public_path('storage/avatars/'.Auth::id().'.jpg')))
                             <!-- Vérifie si un fichier avatar existe avec l'ID de l'utilisateur -->
                             <img src="{{ asset('storage/avatars/'.Auth::id().'.jpg') }}" class="rounded-circle img-fluid mx-auto shadow" style="width: 120px; height: 120px; object-fit: cover;" alt="{{ Auth::user()->name }}">

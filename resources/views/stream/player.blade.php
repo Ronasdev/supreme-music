@@ -33,8 +33,8 @@
                 <div class="card-body p-0">
                     <!-- Image de couverture -->
                     <div class="position-relative">
-                        @if($song->album && $song->album->getFirstMedia('cover'))
-                            <img src="{{ $song->album->getFirstMediaUrl('cover') }}" class="card-img-top" alt="{{ $song->title }}">
+                        @if($song->album && $song->album->hasCoverImage())
+                            <img src="{{ $song->album->getCoverImageUrl() }}" class="card-img-top" alt="{{ $song->title }}">
                         @else
                             <div class="bg-light text-center py-5">
                                 <i class="fas fa-music fa-5x text-muted"></i>

@@ -39,13 +39,13 @@
                                             <td class="ps-3">
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
-                                                        @if($item['type'] == 'album' && $item['product']->getFirstMedia('cover'))
-                                                            <img src="{{ $item['product']->getFirstMediaUrl('cover') }}" 
+                                                        @if($item['type'] == 'album' && $item['product']->hasCoverImage())
+                                                            <img src="{{ $item['product']->getCoverImageUrl() }}" 
                                                                  alt="{{ $item['product']->title }}" 
                                                                  style="width: 50px; height: 50px;" 
                                                                  class="rounded shadow-sm">
-                                                        @elseif($item['type'] == 'song' && $item['product']->album && $item['product']->album->getFirstMedia('cover'))
-                                                            <img src="{{ $item['product']->album->getFirstMediaUrl('cover') }}" 
+                                                        @elseif($item['type'] == 'song' && $item['product']->album && $item['product']->album->hasCoverImage())
+                                                            <img src="{{ $item['product']->album->getCoverImageUrl() }}" 
                                                                  alt="{{ $item['product']->title }}" 
                                                                  style="width: 50px; height: 50px;" 
                                                                  class="rounded shadow-sm">
