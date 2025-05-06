@@ -9,6 +9,7 @@ use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\StreamController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\MediaController;
 
 // Import des contrôleurs administratifs
 use App\Http\Controllers\Admin\AdminController;
@@ -57,6 +58,7 @@ Route::get('/albums/{album}', [AlbumController::class, 'show'])->name('albums.sh
 Route::get('/songs', [SongController::class, 'index'])->name('songs.index'); // Liste des chansons
 Route::get('/songs/{song}', [SongController::class, 'show'])->name('songs.show'); // Détail d'une chanson
 Route::get('/songs/{song}/preview', [SongController::class, 'preview'])->name('songs.preview'); // Prévisualisation audio
+Route::get('/media/audio/{song}', [MediaController::class, 'serveAudio'])->name('media.serveAudio'); // Streaming direct des fichiers audio
 
 // Routes d'authentification gérées par Laravel Breeze
 

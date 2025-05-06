@@ -250,21 +250,63 @@
                 previewPlayer.style.display = 'block';
                 previewButton.style.display = 'none';
                 
+                // Ajouter une classe visuelle d'attente
+                document.body.classList.add('loading-preview');
+                
+                // Afficher un message de chargement
+                const loadingMessage = document.createElement('div');
+                loadingMessage.className = 'text-info mt-2';
+                loadingMessage.id = 'preview-loading-message';
+                loadingMessage.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Chargement de la prévisualisation en cours...';
+                previewPlayer.appendChild(loadingMessage);
+                
                 // Fetch pour récupérer l'URL de prévisualisation
                 fetch('{{ route("songs.preview", $song) }}')
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur serveur: ' + response.status);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Détails de l\'audio:', data);
+                        
+                        if (loadingMessage) {
+                            loadingMessage.remove();
+                        }
+                        
                         if (data.preview_url) {
+                            // Ajouter un gestionnaire d'erreurs pour l'audio
+                            previewAudio.onerror = function(e) {
+                                console.error('Erreur de lecture audio:', e);
+                                alert('Erreur lors de la lecture du fichier audio. Vérifiez la console pour plus de détails.');
+                            };
+                            
+                            // Configurer et lancer la lecture
                             previewAudio.src = data.preview_url;
                             previewAudio.load();
-                            previewAudio.play();
+                            
+                            // Ajouter un gestionnaire pour la lecture réussie
+                            previewAudio.oncanplay = function() {
+                                previewAudio.play()
+                                    .catch(e => {
+                                        console.error('Erreur lors du démarrage de la lecture:', e);
+                                        alert('Le navigateur a bloqué la lecture automatique. Veuillez cliquer sur le lecteur pour démarrer.');
+                                    });
+                            };
                         } else {
                             alert('Prévisualisation non disponible pour cette chanson.');
                         }
+                        
+                        document.body.classList.remove('loading-preview');
                     })
                     .catch(error => {
                         console.error('Erreur lors de la récupération de la prévisualisation:', error);
-                        alert('Impossible de charger la prévisualisation.');
+                        alert('Impossible de charger la prévisualisation : ' + error.message);
+                        if (loadingMessage) {
+                            loadingMessage.remove();
+                        }
+                        document.body.classList.remove('loading-preview');
                     });
             });
         }

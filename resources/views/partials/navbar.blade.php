@@ -133,7 +133,17 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
               <span class="d-none d-md-inline me-2">{{ auth()->user()->name }}</span>
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random" class="rounded-circle" height="25" alt="Avatar" loading="lazy">
+              @if(session('user_avatar'))
+                <img src="{{ session('user_avatar') }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
+              @elseif(auth()->user()->getFirstMediaUrl('avatar'))
+                <img src="{{ auth()->user()->getFirstMediaUrl('avatar') }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
+              @elseif(file_exists(public_path('storage/avatars/'.auth()->id().'.jpg')))
+                <img src="{{ asset('storage/avatars/'.auth()->id().'.jpg') }}" class="rounded-circle" height="25" width="25" style="object-fit: cover;" alt="{{ auth()->user()->name }}" loading="lazy">
+              @else
+                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="height: 25px; width: 25px;">
+                  <span class="text-white" style="font-size: 12px; line-height: 1;">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                </div>
+              @endif
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow-5" aria-labelledby="userDropdown">
               <li>

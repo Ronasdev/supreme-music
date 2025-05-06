@@ -27,7 +27,7 @@
         <div class="card h-100 shadow-sm hover-shadow">
           <div class="position-relative">
             @if($album->getFirstMedia('cover'))
-              <img src="{{ $album->getFirstMedia('cover')->getUrl() }}" class="card-img-top" alt="{{ $album->title }}">
+              <img src="{{ $album->getFirstMediaUrl('cover') }}" class="card-img-top" alt="{{ $album->title }}">
             @else
               <img src="https://placehold.co/300x300?text=Album" class="card-img-top" alt="{{ $album->title }}">
             @endif

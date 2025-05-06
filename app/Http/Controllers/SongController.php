@@ -107,7 +107,7 @@ class SongController extends Controller
     }
 
     /**
-     * Prévisualise un extrait de la chanson
+     * Prévisualise un extrait de la chanson 
      * Route: GET /songs/{song}/preview
      * Route Name: songs.preview
      * 
@@ -116,20 +116,24 @@ class SongController extends Controller
      */
     public function preview(Song $song)
     {
-        // Récupère le média audio de la chanson
+        // Vérifier que la chanson a un fichier audio
         $media = $song->getFirstMedia('audio');
         
         if (!$media) {
             return response()->json(['error' => 'Fichier audio non disponible'], 404);
         }
         
-        // Incrémenter le compteur de previews
-        $song->increment('previews_count');
+        // Utiliser notre nouvelle route de streaming direct qui contourne les problèmes
+        // Cette approche est beaucoup plus simple et robuste
+        $directStreamUrl = route('media.serveAudio', $song);
         
-        // Retourne l'URL de l'extrait (peut être une version tronquée ou de moindre qualité)
+        // Retourner les informations nécessaires à la lecture audio
         return response()->json([
-            'preview_url' => $media->getTemporaryUrl(now()->addMinutes(5), 'preview'),
-            'duration' => $song->duration
+            'preview_url' => $directStreamUrl,
+            'duration' => $song->duration,
+            'title' => $song->title,
+            'artist' => $song->artist,
+            'success' => true
         ]);
     }
 }
