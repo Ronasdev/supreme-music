@@ -81,16 +81,36 @@ class Song extends Model {
      */
     public function setAudioFile($file)
     {
-        // Supprime l'ancien fichier audio s'il existe
+        // Supprime l'ancien fichier s'il existe
         if ($this->hasAudioFile()) {
+            // Supprimer du répertoire de stockage
             Storage::disk('public')->delete('audio/' . $this->id . '/' . $this->audio_file);
+            
+            // Supprimer également de public/storage si disponible
+            $publicPath = public_path('storage/audio/' . $this->id . '/' . $this->audio_file);
+            if (file_exists($publicPath)) {
+                unlink($publicPath);
+            }
         }
         
         // Génère un nom de fichier unique
         $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
         
-        // Stocke le nouveau fichier audio
+        // Stocke le fichier dans storage/app/public comme avant
         $path = $file->storeAs('audio/' . $this->id, $filename, 'public');
+        
+        // Assure-toi que le répertoire public existe
+        $publicDir = public_path('storage/audio/' . $this->id);
+        if (!file_exists($publicDir)) {
+            mkdir($publicDir, 0755, true);
+        }
+        
+        // Copie également le fichier dans public/storage
+        $targetPath = $publicDir . '/' . $filename;
+        copy(storage_path('app/public/audio/' . $this->id . '/' . $filename), $targetPath);
+        
+        // Mettre à jour la taille du fichier
+        $this->filesize = filesize($targetPath);
         
         if ($path) {
             $this->audio_file = $filename;

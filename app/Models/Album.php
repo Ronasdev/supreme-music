@@ -72,14 +72,31 @@ class Album extends Model {
     {
         // Supprime l'ancienne image si elle existe
         if ($this->hasCoverImage()) {
+            // Supprimer du répertoire de stockage
             Storage::disk('public')->delete('covers/' . $this->id . '/' . $this->cover_image);
+            
+            // Supprimer également de public/storage si disponible
+            $publicPath = public_path('storage/covers/' . $this->id . '/' . $this->cover_image);
+            if (file_exists($publicPath)) {
+                unlink($publicPath);
+            }
         }
         
         // Génère un nom de fichier unique
         $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
         
-        // Stocke la nouvelle image
+        // Stocke le fichier dans storage/app/public comme avant
         $path = $file->storeAs('covers/' . $this->id, $filename, 'public');
+        
+        // Assure-toi que le répertoire public existe
+        $publicDir = public_path('storage/covers/' . $this->id);
+        if (!file_exists($publicDir)) {
+            mkdir($publicDir, 0755, true);
+        }
+        
+        // Copie également le fichier dans public/storage
+        $targetPath = $publicDir . '/' . $filename;
+        copy(storage_path('app/public/covers/' . $this->id . '/' . $filename), $targetPath);
         
         if ($path) {
             $this->cover_image = $filename;
