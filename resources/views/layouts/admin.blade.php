@@ -27,6 +27,22 @@
       transition: all 0.3s;
       z-index: 1000;
     }
+    
+    /* Classe pour le sidebar toggled */
+    .admin-sidebar.toggled {
+      width: 60px;
+    }
+    
+    .admin-sidebar.toggled .logo-text, 
+    .admin-sidebar.toggled .nav-text, 
+    .admin-sidebar.toggled .nav-heading {
+      display: none;
+    }
+    
+    .admin-sidebar.toggled .nav-link {
+      text-align: center;
+      padding: 15px 5px;
+    }
     .admin-sidebar .logo {
       padding: 15px 0;
       text-align: center;
@@ -52,10 +68,16 @@
     }
     .admin-main {
       margin-left: 280px;
-      width: 100%;
+      width: calc(100% - 280px);
       min-height: 100vh;
       background-color: #f5f5f5;
       transition: all 0.3s;
+    }
+    
+    /* Classe pour le main content expansé */
+    .admin-main.expanded {
+      margin-left: 60px;
+      width: calc(100% - 60px);
     }
     .admin-header {
       background-color: white;
@@ -233,9 +255,13 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+
 <script>
-  // Toggle sidebar sur les petits écrans
+  // Initialiser les composants sur le chargement de la page
   document.addEventListener('DOMContentLoaded', function() {
+    // Toggle sidebar quand on clique sur le hamburger
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', function() {
@@ -243,6 +269,18 @@
         document.querySelector('.admin-main').classList.toggle('expanded');
       });
     }
+    
+    // Initialiser les dropdowns de Bootstrap
+    const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+    dropdownElementList.forEach(function(dropdownToggleEl) {
+      // Vérifier si MDB est chargé correctement
+      if (typeof mdb !== 'undefined' && mdb.Dropdown) {
+        new mdb.Dropdown(dropdownToggleEl);
+      } else if (typeof bootstrap !== 'undefined') {
+        // Fallback à Bootstrap si MDB n'est pas disponible
+        new bootstrap.Dropdown(dropdownToggleEl);
+      }
+    });
   });
 </script>
 

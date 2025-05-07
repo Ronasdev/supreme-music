@@ -112,23 +112,27 @@ class OrderController extends Controller
         $total = 0;
         $items = [];
         
-        foreach ($cart as $id => $item) {
-            if ($item['type'] === 'album') {
-                $product = Album::find($id);
+        foreach ($cart as $cartKey => $item) {
+            // Récupérer l'ID numérique depuis le cartKey ou depuis l'item
+            $itemId = $item['id']; // Utiliser l'ID stocké dans le tableau
+            $itemType = $item['type'];
+            
+            if ($itemType === 'album') {
+                $product = Album::find($itemId);
                 if ($product) {
                     $total += $product->price;
                     $items[] = [
-                        'id' => $id,
+                        'id' => $itemId, // ID numérique
                         'type' => 'album',
                         'price' => $product->price,
                     ];
                 }
-            } elseif ($item['type'] === 'song') {
-                $product = Song::find($id);
+            } elseif ($itemType === 'song') {
+                $product = Song::find($itemId);
                 if ($product) {
                     $total += $product->price;
                     $items[] = [
-                        'id' => $id,
+                        'id' => $itemId, // ID numérique
                         'type' => 'song',
                         'price' => $product->price,
                     ];
