@@ -297,6 +297,44 @@
                             // Ajouter un gestionnaire pour la lecture réussie
                             previewAudio.oncanplay = function() {
                                 console.log('Audio prêt à être joué');
+                                
+                                // Gestionnaire d'événement pour limiter la lecture à 30 secondes
+                                if (data.preview_duration) {
+                                    // S'assurer qu'il n'y a pas de duplication des gestionnaires
+                                    previewAudio.removeEventListener('timeupdate', limitPlaybackDuration);
+                                    
+                                    // Créer une fonction pour limiter la durée
+                                    function limitPlaybackDuration() {
+                                        if (previewAudio.currentTime >= data.preview_duration) {
+                                            console.log(`Limite de prévisualisation de ${data.preview_duration}s atteinte!`);
+                                            previewAudio.pause();
+                                            // Afficher un message d'information
+                                            const previewLimitMessage = document.getElementById('preview-limit-message');
+                                            if (!previewLimitMessage) {
+                                                const message = document.createElement('div');
+                                                message.id = 'preview-limit-message';
+                                                message.className = 'alert alert-info mt-3';
+                                                message.innerHTML = `<i class="fas fa-info-circle"></i> <strong>Prévisualisation limitée à 30 secondes.</strong> <a href="{{ route('login') }}">Connectez-vous</a> ou <a href="{{ route('cart.add') }}" onclick="event.preventDefault(); document.getElementById('add-to-cart-form').submit();">achetez cette chanson</a> pour l'écouter intégralement.`;
+                                                previewPlayer.appendChild(message);
+                                                
+                                                // Ajouter un bouton pour rejouer la prévisualisation
+                                                const replayButton = document.createElement('button');
+                                                replayButton.className = 'btn btn-sm btn-outline-primary mt-2';
+                                                replayButton.innerHTML = '<i class="fas fa-redo"></i> Rejouer la prévisualisation';
+                                                replayButton.onclick = function() {
+                                                    previewAudio.currentTime = 0;
+                                                    previewAudio.play();
+                                                    message.remove();
+                                                };
+                                                previewPlayer.appendChild(replayButton);
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Ajouter le gestionnaire d'événement
+                                    previewAudio.addEventListener('timeupdate', limitPlaybackDuration);
+                                }
+                                
                                 setTimeout(() => {
                                     previewAudio.play()
                                         .then(() => console.log('Lecture audio démarrée avec succès'))

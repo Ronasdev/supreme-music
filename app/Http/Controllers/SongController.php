@@ -125,15 +125,16 @@ class SongController extends Controller
             // Incrémenter le compteur de previews
             $song->increment('previews_count');
             
-            // Obtenir l'URL du fichier audio
-            $audioUrl = $song->getAudioUrl();
-            
+            // Obtenir l'URL de prévisualisation (limitée à 30 secondes pour les utilisateurs non autorisés)
+            $previewUrl = route('media.servePreview', ['song' => $song->id]);
+        
             // Retourner les informations nécessaires à la lecture audio
             return response()->json([
-                'preview_url' => $audioUrl,
+                'preview_url' => $previewUrl,
                 'duration' => $song->duration,
                 'title' => $song->title,
                 'artist' => $song->artist,
+                'preview_duration' => 30, // Durée maximale de la prévisualisation en secondes
                 'success' => true
             ]);
         } catch (\Exception $e) {
