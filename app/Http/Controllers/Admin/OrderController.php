@@ -77,10 +77,15 @@ class OrderController extends Controller
         ]);
         
         // Historique des changements de statut (si disponible)
-        $statusHistory = DB::table('order_status_history')
-            ->where('order_id', $order->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $statusHistory = DB::table('order_status_history')
+                ->where('order_id', $order->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } catch (\Exception $e) {
+            // La table n'existe peut-être pas encore
+            $statusHistory = collect();
+        }
             
         // Commandes précédentes de l'utilisateur (pour contexte)
         $previousOrders = Order::where('user_id', $order->user_id)
